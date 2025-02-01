@@ -45,6 +45,6 @@ app.post('/add-post', async (req, res) => {
     }
   });
 
-const PORT = 3000
+const PORT = 4000
 
 app.listen(PORT, () => console.log(`Server listen on http://localhost:${PORT}`))
