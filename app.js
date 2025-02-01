@@ -30,11 +30,11 @@ app.get('/', async (req, res) => {
     }
 })
 
-app.get('/add-post', (req, res) => {
-    res.render('addPost')
+app.get('/add-note', (req, res) => {
+    res.render('addNote')
 })
 
-app.post('/add-post', async (req, res) => {
+app.post('/add-note', async (req, res) => {
     try {
         const { author, title, content } = req.body
         await Post.create({ author, title, content })
