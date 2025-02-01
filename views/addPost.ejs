@@ -13,18 +13,21 @@
             <h1 class="mb-4 text-center">Добавить новую заметку</h1>
             <form action="/add-post" method="POST">
                 <div class="mb-3">
-                    <label for="author" class="form-label">Автор:</label>
-                    <input type="text" class="form-control" id="author" name="author" required>
-                </div>
-                <div class="mb-3">
-                    <label for="title" class="form-label">Заголовок:</label>
+                    <label for="title" class="form-label">Title</label>
                     <input type="text" class="form-control" id="title" name="title" required>
                 </div>
                 <div class="mb-3">
-                    <label for="content" class="form-label">Содержание:</label>
-                    <textarea class="form-control" id="content" name="content" rows="4" required></textarea>
+                    <label for="content" class="form-label">Content</label>
+                    <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Добавить</button>
+                <div class="mb-3">
+                    <label for="author" class="form-label">Author</label>
+                    <select class="form-select" id="author" name="author" required>
+                        <option value="hshnsie3">hshnsie3</option>
+                        <option value="pemoqo">pemoqo</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Создать пост</button>
             </form>
             <a href="/" class="btn btn-secondary mt-3 w-100">Назад</a>
         </div>
