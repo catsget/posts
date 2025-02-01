@@ -7,11 +7,19 @@ const Task = require('./models/task');
 const app = express();
 const PORT = 3000;
 
-// Подключение к MongoDB
-mongoose.connect('mongodb://localhost:27017/tasksDB', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
+async function connectDB() {
+    try {
+        await mongoose.connect('mongodb://localhost:27017/tasksDB', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        console.log('Подключение к MongoDB успешно');
+    } catch (error) {
+        console.error('Ошибка подключения к MongoDB:', error);
+        process.exit(1);
+    }
+}
+connectDB();
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
