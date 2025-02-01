@@ -8,10 +8,7 @@ const app = express();
 
 async function connectDB() {
     try {
-        await mongoose.connect('mongodb://localhost:27017/tasksDB', {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
+        await mongoose.connect(process.env.MONGO_URI);
         console.log('Подключение к MongoDB успешно');
     } catch (error) {
         console.error('Ошибка подключения к MongoDB:', error);
