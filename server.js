@@ -20,29 +20,49 @@ app.use(morgan('dev'));
 
 // Главная страница со списком задач
 app.get('/', async (req, res) => {
-    const tasks = await Task.find();
-    res.render('index', { tasks });
+    try {
+        const tasks = await Task.find();
+        res.render('index', { tasks });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Ошибка загрузки задач');
+    }
 });
 
 // Создание новой задачи
 app.post('/add', async (req, res) => {
-    const { title } = req.body;
-    await Task.create({ title, completed: false });
-    res.redirect('/');
+    try {
+        const { title, author } = req.body;
+        if (!title || !author) return res.status(400).send('Название и автор обязательны');
+        await Task.create({ title, author });
+        res.redirect('/');
+    } catch (error) {
+        res.status(500).send('Ошибка создания задачи');
+    }
 });
 
 // Отметка выполнения
 app.post('/toggle/:id', async (req, res) => {
-    const task = await Task.findById(req.params.id);
-    task.completed = !task.completed;
-    await task.save();
-    res.redirect('/');
+    try {
+        const task = await Task.findById(req.params.id);
+        if (!task) return res.status(404).send('Задача не найдена');
+        task.completed = !task.completed;
+        await task.save();
+        res.redirect('/');
+    } catch (error) {
+        res.status(500).send('Ошибка обновления задачи');
+    }
 });
 
 // Удаление задачи
 app.post('/delete/:id', async (req, res) => {
-    await Task.findByIdAndDelete(req.params.id);
-    res.redirect('/');
+    try {
+        const task = await Task.findByIdAndDelete(req.params.id);
+        if (!task) return res.status(404).send('Задача не найдена');
+        res.redirect('/');
+    } catch (error) {
+        res.status(500).send('Ошибка удаления задачи');
+    }
 });
 
 app.listen(PORT);
