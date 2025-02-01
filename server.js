@@ -5,7 +5,6 @@ const morgan = require('morgan');
 const Task = require('./models/task');
 
 const app = express();
-const PORT = 3000;
 
 async function connectDB() {
     try {
@@ -73,4 +72,4 @@ app.post('/delete/:id', async (req, res) => {
     }
 });
 
-app.listen(PORT);
+app.listen(4000);
