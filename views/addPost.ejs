@@ -10,8 +10,12 @@
 
     <div class="container mt-5">
         <div class="card shadow-sm p-4">
-            <h1 class="mb-4 text-center">Добавить новый пост</h1>
+            <h1 class="mb-4 text-center">Добавить новую заметку</h1>
             <form action="/add-post" method="POST">
+                <div class="mb-3">
+                    <label for="author" class="form-label">Автор:</label>
+                    <input type="text" class="form-control" id="author" name="author" required>
+                </div>
                 <div class="mb-3">
                     <label for="title" class="form-label">Заголовок:</label>
                     <input type="text" class="form-control" id="title" name="title" required>
