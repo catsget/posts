@@ -1,50 +1,48 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const app = express()
-const morgan = require('morgan')
+// server.js
+const express = require('express');
+const mongoose = require('mongoose');
+const morgan = require('morgan');
+const Task = require('./models/task');
 
-async function ConnectDB() {
-    try {
-        await mongoose.connect(process.env.MONGO_URI)
-        console.log('Connected to DB')
-    } catch (err) {
-        console.error(err)
-        process.exit(1)
-    }
-}
-ConnectDB()
+const app = express();
+const PORT = 3000;
 
-app.set('view engine', 'ejs')
-app.use(morgan('dev'))
-app.use(express.urlencoded({ extended: false }))
+// Подключение к MongoDB
+mongoose.connect('mongodb://localhost:27017/tasksDB', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
 
-const Post = require('./models/post')
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan('dev'));
 
+// Главная страница со списком задач
 app.get('/', async (req, res) => {
-    try {
-        const posts = await Post.find().sort({ createdAt: -1}).lean()
-        res.render('main', { posts })
-    } catch (err) {
-        console.error(err)
-        res.status(500).send('Server Error')
-    }
-})
+    const tasks = await Task.find();
+    res.render('index', { tasks });
+});
 
-app.get('/add-note', (req, res) => {
-    res.render('addNote')
-})
+// Создание новой задачи
+app.post('/add', async (req, res) => {
+    const { title } = req.body;
+    await Task.create({ title, completed: false });
+    res.redirect('/');
+});
 
-app.post('/add-note', async (req, res) => {
-    try {
-        const { author, title, content } = req.body
-        await Post.create({ author, title, content })
-        res.redirect('/')
-    } catch (err) {
-        console.error(err)
-        res.status(500).send('Server Error')
-    }
-  });
+// Отметка выполнения
+app.post('/toggle/:id', async (req, res) => {
+    const task = await Task.findById(req.params.id);
+    task.completed = !task.completed;
+    await task.save();
+    res.redirect('/');
+});
 
-const PORT = 4000
+// Удаление задачи
+app.post('/delete/:id', async (req, res) => {
+    await Task.findByIdAndDelete(req.params.id);
+    res.redirect('/');
+});
 
-app.listen(PORT)
+app.listen(PORT);
