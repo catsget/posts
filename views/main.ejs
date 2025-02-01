@@ -18,7 +18,7 @@
         <div class="card-body">
           <h5 class="card-title"><%= post.title %></h5>
           <p class="card-text"><%= post.content %></p>
-          <small class="text-muted">
+          <small class="text-light opacity-75 fw-bold">
             Автор: <strong><%= post.author || "Неизвестный" %></strong> | 
             Posted: <%= post.createdAt.toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }) %>
           </small>
