@@ -13,7 +13,6 @@
     <form action="/add" method="POST" class="mb-3">
         <div class="input-group">
             <input type="text" name="title" class="form-control" placeholder="Название задачи" required>
-            <input type="text" name="author" class="form-control" placeholder="Автор" required>
             <button type="submit" class="btn btn-primary">Добавить</button>
         </div>
     </form>
@@ -31,7 +30,7 @@
                     </form>
                     <!-- Название задачи и автор -->
                     <strong class="<%= task.completed ? 'text-decoration-line-through' : '' %>"><%= task.title %></strong>
-                    <small class="text-muted">— Автор: <%= task.author %> | <%= new Date(task.createdAt).toLocaleDateString() %></small>
+                    <small class="text-muted">— Автор: <%= task.author %> | <%= new Date(task.createdAt).toLocaleDateString('ru_RU', 'Europe/Moscow') %></small>
                 </div>
                 
                 <!-- Кнопка для удаления задачи -->
