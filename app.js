@@ -36,8 +36,8 @@ app.get('/add-post', (req, res) => {
 
 app.post('/add-post', async (req, res) => {
     try {
-        const { title, content } = req.body
-        await Post.create({ title, content })
+        const { author, title, content } = req.body
+        await Post.create({ author, title, content })
         res.redirect('/')
     } catch (err) {
         console.error(err)
