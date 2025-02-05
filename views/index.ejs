@@ -3,42 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список задач</title>
+    <title>Задачи и Табы</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="container mt-4">
-    <h1 class="mb-4">Список задач</h1>
+    <h1 class="mb-4">Список табов и задач</h1>
     
-    <!-- Форма для добавления новой задачи -->
-    <form action="/add" method="POST" class="mb-3">
+    <!-- Форма для добавления нового таба -->
+    <form action="/addTab" method="POST" class="mb-3">
         <div class="input-group">
-            <input type="text" name="title" class="form-control" placeholder="Название задачи" required>
-            <button type="submit" class="btn btn-primary">Добавить</button>
+            <input type="text" name="title" class="form-control" placeholder="Название таба" required>
+            <button type="submit" class="btn btn-primary">Добавить таб</button>
         </div>
     </form>
     
-    <!-- Список задач -->
-    <ul class="list-group">
-        <% tasks.forEach(task => { %>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                    <!-- Кнопка для отметки задачи как выполненной -->
-                    <form action="/toggle/<%= task._id %>" method="POST" class="d-inline">
-                        <button type="submit" class="btn btn-sm <%= task.completed ? 'btn-success' : 'btn-outline-secondary' %>">
-                            <%= task.completed ? '✔' : '○' %>
-                        </button>
-                    </form>
-                    <!-- Название задачи и автор -->
-                    <strong class="<%= task.completed ? 'text-decoration-line-through' : '' %>"><%= task.title %></strong>
-                    <small class="text-muted">— Автор: <%= task.author %> | <%= new Date(task.createdAt).toLocaleString('ru-RU', {timeZone:'Europe/Moscow'}) %></small>
-                </div>
-                
-                <!-- Кнопка для удаления задачи -->
-                <form action="/delete/<%= task._id %>" method="POST">
-                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+    <ul class="list-group mb-5">
+        <% tasksTabs.forEach(tab => { %>
+            <li class="list-group-item">
+                <h4><%= tab.title %> (Added: <%= new Date(tab.createdAt).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }) %>)</h4>
+    
+                <!-- Форма для добавления задачи в таб -->
+                <form action="/addTask/<%= tab._id %>" method="POST" class="mb-3">
+                    <div class="input-group">
+                        <input type="text" name="title" class="form-control" placeholder="Название задачи" required>
+                        <button type="submit" class="btn btn-secondary">Добавить задачу</button>
+                    </div>
                 </form>
+    
+                <!-- Кнопка удаления таба -->
+                <form action="/deleteTab/<%= tab._id %>" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-danger btn-sm">Удалить таб</button>
+                </form>
+    
+                <ul class="list-group mt-3">
+                    <% tab.tasks.forEach(task => { %>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <form action="/toggle/<%= task._id %>" method="POST" class="d-inline" id="toggle-form-<%= task._id %>">
+                                    <button type="submit" class="btn btn-sm <%= task.completed ? 'btn-success' : 'btn-outline-secondary' %>" id="toggle-button-<%= task._id %>">
+                                        <%= task.completed ? '✔' : '○' %>
+                                    </button>
+                                </form>
+                                <strong><%= task.title %></strong>
+                                <small class="text-muted"> — Создано: <%= new Date(task.createdAt).toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' }) %></small>
+                            </div>
+                            <form action="/deleteTask/<%= task._id %>" method="POST">
+                                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                            </form>
+                        </li>
+                    <% }); %>
+                </ul>
+                
+                <script>
+                    document.querySelectorAll('[id^="toggle-form-"]').forEach(form => {
+                        form.addEventListener('submit', async function(event) {
+                            event.preventDefault();
+                            const taskId = this.id.split('-')[2];
+                            const button = document.getElementById(`toggle-button-${taskId}`);
+                            
+                            // Отправляем POST запрос для переключения состояния
+                            const response = await fetch(this.action, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' }
+                            });
+                
+                            if (response.ok) {
+                                const task = await response.json(); // Получаем обновленную задачу
+                                button.classList.toggle('btn-success', task.completed);
+                                button.classList.toggle('btn-outline-secondary', !task.completed);
+                                button.textContent = task.completed ? '✔' : '○';
+                            }
+                        });
+                    });
+                </script>
+                
             </li>
         <% }); %>
     </ul>
+    
 </body>
 </html>

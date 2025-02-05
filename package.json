@@ -12,6 +12,7 @@
   "type": "commonjs",
   "description": "",
   "devDependencies": {
+    "dotenv": "^16.4.7",
     "morgan": "^1.10.0"
   },
   "dependencies": {
